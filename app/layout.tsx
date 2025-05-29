@@ -9,7 +9,12 @@ export const metadata: Metadata = {
   title: "LynIA - Agente de IA",
   description: "Conheça a LynIA, sua assistente de IA que entende, conversa e integra com seu CRM.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
     generator: 'v0.dev'
 }

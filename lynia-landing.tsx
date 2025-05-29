@@ -109,11 +109,12 @@ export default function Component() {
       <main className="flex-1">
         {/* Hero Section */}
         <section
-          className="w-full py-12 md:py-24 lg:py-32 relative"
+          className="w-full min-h-screen flex items-center justify-center relative"
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 51, 153, 0.8), rgba(0, 102, 204, 0.8)), url('/hero-background.png')`,
+            backgroundImage: `linear-gradient(rgba(0, 51, 153, 0.7), rgba(0, 102, 204, 0.7)), url('/hero-background.png')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
           <div className="container px-4 md:px-6 mx-auto relative z-10">
@@ -123,17 +124,17 @@ export default function Component() {
                 IA + Atendimento Humano
               </Badge>
               <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-white">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-lg">
                   Atendimento inteligente, com o toque humano.
                 </h1>
-                <p className="mx-auto max-w-[700px] text-white/90 md:text-xl lg:text-2xl">
+                <p className="mx-auto max-w-[700px] text-white/90 md:text-xl lg:text-2xl drop-shadow-md">
                   Conheça a LynIA, sua assistente de IA que entende, conversa e integra com seu CRM.
                 </p>
               </div>
               <div className="space-x-4 pt-6">
                 <Button
                   size="lg"
-                  className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg"
+                  className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
                   onClick={() => window.open(whatsappLink, "_blank")}
                 >
                   <MessageCircle className="mr-2 h-5 w-5" />

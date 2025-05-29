@@ -15,11 +15,35 @@ import {
   ArrowRight,
   Bot,
   Handshake,
+  Menu,
+  X,
 } from "lucide-react"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
 export default function Component() {
-  const whatsappNumber = "5511999999999" // Replace with the actual WhatsApp number
+  const whatsappLink = "https://wa.me/5514991981879?text=Ol%C3%A1!%20Quero%20conhecer%20a%20LynIA!"
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Verificar inicialmente
+    checkIfMobile()
+
+    // Adicionar listener para redimensionamento
+    window.addEventListener("resize", checkIfMobile)
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkIfMobile)
+  }, [])
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -28,48 +52,93 @@ export default function Component() {
         <div className="flex items-center justify-center">
           <img src="/logo-lynia.png" alt="LynIA" className="h-10" />
         </div>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link href="#como-funciona" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Como Funciona
-          </Link>
-          <Link href="#beneficios" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Benefícios
-          </Link>
-          <Link href="#resultados" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Resultados
-          </Link>
-        </nav>
+
+        {isMobile ? (
+          <>
+            <button
+              onClick={toggleMenu}
+              className="ml-auto p-2 text-gray-600 hover:text-blue-600 focus:outline-none"
+              aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            {isMenuOpen && (
+              <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-md py-4 px-4 z-50">
+                <nav className="flex flex-col space-y-4">
+                  <Link
+                    href="#como-funciona"
+                    className="text-sm font-medium hover:text-blue-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Como Funciona
+                  </Link>
+                  <Link
+                    href="#beneficios"
+                    className="text-sm font-medium hover:text-blue-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Benefícios
+                  </Link>
+                  <Link
+                    href="#resultados"
+                    className="text-sm font-medium hover:text-blue-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Resultados
+                  </Link>
+                </nav>
+              </div>
+            )}
+          </>
+        ) : (
+          <nav className="ml-auto flex gap-4 sm:gap-6">
+            <Link href="#como-funciona" className="text-sm font-medium hover:text-blue-600 transition-colors">
+              Como Funciona
+            </Link>
+            <Link href="#beneficios" className="text-sm font-medium hover:text-blue-600 transition-colors">
+              Benefícios
+            </Link>
+            <Link href="#resultados" className="text-sm font-medium hover:text-blue-600 transition-colors">
+              Resultados
+            </Link>
+          </nav>
+        )}
       </header>
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6 mx-auto">
+        <section
+          className="w-full py-12 md:py-24 lg:py-32 relative"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 51, 153, 0.8), rgba(0, 102, 204, 0.8)), url('/hero-background.png')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="container px-4 md:px-6 mx-auto relative z-10">
             <div className="flex flex-col items-center space-y-4 text-center">
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200">
+              <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
                 <Zap className="w-4 h-4 mr-1" />
                 IA + Atendimento Humano
               </Badge>
               <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-white">
                   Atendimento inteligente, com o toque humano.
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl lg:text-2xl">
+                <p className="mx-auto max-w-[700px] text-white/90 md:text-xl lg:text-2xl">
                   Conheça a LynIA, sua assistente de IA que entende, conversa e integra com seu CRM.
                 </p>
               </div>
               <div className="space-x-4 pt-6">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-8 py-3 text-lg"
-                  onClick={() => window.open(`https://wa.me/${whatsappNumber}`, "_blank")}
+                  className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg"
+                  onClick={() => window.open(whatsappLink, "_blank")}
                 >
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Fale com a LynIA agora
                 </Button>
-                {/* <Button variant="outline" size="lg" className="px-8 py-3 text-lg">
-                  Ver demonstração
-                </Button> */}
               </div>
             </div>
           </div>
@@ -333,19 +402,12 @@ export default function Component() {
                 size="lg"
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg"
-                onClick={() => window.open(`https://wa.me/${whatsappNumber}`, "_blank")}
+                onClick={() => window.open(whatsappLink, "_blank")}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Fale com a LynIA agora
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              {/* <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg"
-              >
-                Agendar demonstração
-              </Button> */}
             </div>
           </div>
         </section>
@@ -369,6 +431,17 @@ export default function Component() {
           </Link>
         </nav>
       </footer>
+
+      {/* Botão flutuante do WhatsApp */}
+      <a
+        href={whatsappLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 transition-all duration-300 hover:scale-110"
+        aria-label="Fale conosco pelo WhatsApp"
+      >
+        <MessageCircle size={28} />
+      </a>
     </div>
   )
 }

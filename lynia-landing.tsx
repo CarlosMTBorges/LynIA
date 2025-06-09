@@ -185,6 +185,20 @@ export default function Component() {
           </div>
         </section>
 
+        {/* Vídeo LynIA - Tela Cheia */}
+        <section className="w-full">
+          <div className="relative w-full h-0 pb-[56.25%]">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src="https://www.youtube.com/embed/AvdYaJldzFI"
+              title="LynIA - Agente de IA"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </section>
+
         {/* Problemas que resolve */}
         <section className="w-full py-12 md:py-24 bg-gray-50">
           <div className="container px-4 md:px-6 mx-auto">

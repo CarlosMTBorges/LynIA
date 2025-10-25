@@ -145,6 +145,18 @@ export default function Component() {
       emblaApi.on("reInit", onSelect)
     }, [emblaApi, onSelect])
 
+    const goToPrevImage = () => {
+      if (selectedImage !== null) {
+        setSelectedImage((selectedImage - 1 + screenshots.length) % screenshots.length)
+      }
+    }
+
+    const goToNextImage = () => {
+      if (selectedImage !== null) {
+        setSelectedImage((selectedImage + 1) % screenshots.length)
+      }
+    }
+
     if (!isClient) {
       return null
     }
@@ -200,7 +212,7 @@ export default function Component() {
           </button>
         </div>
 
-        {/* Lightbox Dialog */}
+        {/* Lightbox Dialog com navegação */}
         <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
           <DialogContent className="max-w-6xl w-full p-0 overflow-hidden">
             {selectedImage !== null && (
@@ -218,7 +230,28 @@ export default function Component() {
                 />
                 <div className="bg-gray-900 text-white p-6">
                   <h3 className="text-2xl font-bold mb-2">{screenshots[selectedImage].title}</h3>
-                  <p className="text-gray-300">{screenshots[selectedImage].description}</p>
+                  <p className="text-gray-300 mb-4">{screenshots[selectedImage].description}</p>
+
+                  {/* Navegação com setas */}
+                  <div className="flex items-center justify-center gap-4">
+                    <button
+                      onClick={goToPrevImage}
+                      className="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-colors"
+                      aria-label="Imagem anterior"
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <span className="text-gray-400 text-sm">
+                      {selectedImage + 1} / {screenshots.length}
+                    </span>
+                    <button
+                      onClick={goToNextImage}
+                      className="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-colors"
+                      aria-label="Próxima imagem"
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

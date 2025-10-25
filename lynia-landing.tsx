@@ -22,7 +22,7 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 
 export default function Component() {
-  const whatsappLink = "https://wa.me/5514991981879?text=Ol%C3%A1!%20Quero%20conhecer%20a%20LynIA!"
+  const whatsappLink = "https://wa.me/5551995465880?text=Ol%C3%A1!%20Quero%20conhecer%20a%20LynIA!"
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 

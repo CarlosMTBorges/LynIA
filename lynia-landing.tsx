@@ -8,7 +8,6 @@ import {
   Users,
   Database,
   Clock,
-  Target,
   Shield,
   Zap,
   TrendingUp,
@@ -17,9 +16,13 @@ import {
   Handshake,
   Menu,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
+import useEmblaCarousel from "embla-carousel-react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 
 export default function Component() {
   const whatsappLink = "https://wa.me/5551995465880?text=Ol%C3%A1!%20Quero%20conhecer%20a%20LynIA!"
@@ -43,6 +46,156 @@ export default function Component() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+  }
+
+  const ScreenshotGallery = () => {
+    const [emblaRef, emblaApi] = useEmblaCarousel({
+      loop: true,
+      align: "start",
+      slidesToScroll: 1,
+    })
+    const [selectedImage, setSelectedImage] = useState<number | null>(null)
+    const [canScrollPrev, setCanScrollPrev] = useState(false)
+    const [canScrollNext, setCanScrollNext] = useState(false)
+
+    const screenshots = [
+      {
+        src: "/screenshots/dashboard.jpg",
+        title: "Dashboard",
+        description: "Visualize todas as métricas em tempo real",
+      },
+      {
+        src: "/screenshots/pipeline-kanban.jpg",
+        title: "Pipeline Kanban",
+        description: "Gestão visual do funil de vendas",
+      },
+      {
+        src: "/screenshots/oportunidades.jpg",
+        title: "Oportunidades",
+        description: "Acompanhe cada negociação",
+      },
+      {
+        src: "/screenshots/chat-whatsapp.jpg",
+        title: "Chat WhatsApp",
+        description: "Conversas integradas ao CRM",
+      },
+      {
+        src: "/screenshots/contatos.jpg",
+        title: "Contatos",
+        description: "Centralize todos os seus contatos",
+      },
+      {
+        src: "/screenshots/followups-automaticos.jpg",
+        title: "Automações",
+        description: "Follow-ups inteligentes e automáticos",
+      },
+      {
+        src: "/screenshots/empresas.jpg",
+        title: "Empresas",
+        description: "Gerencie empresas clientes",
+      },
+      {
+        src: "/screenshots/atividades.jpg",
+        title: "Atividades",
+        description: "Organize todas as suas tarefas",
+      },
+      {
+        src: "/screenshots/fluxo-automacao.jpg",
+        title: "Inteligência Artificial",
+        description: "IA generativa que aprende e evolui com suas conversas",
+      },
+    ]
+
+    const scrollPrev = useCallback(() => {
+      if (emblaApi) emblaApi.scrollPrev()
+    }, [emblaApi])
+
+    const scrollNext = useCallback(() => {
+      if (emblaApi) emblaApi.scrollNext()
+    }, [emblaApi])
+
+    const onSelect = useCallback(() => {
+      if (!emblaApi) return
+      setCanScrollPrev(emblaApi.canScrollPrev())
+      setCanScrollNext(emblaApi.canScrollNext())
+    }, [emblaApi])
+
+    useEffect(() => {
+      if (!emblaApi) return
+      onSelect()
+      emblaApi.on("select", onSelect)
+      emblaApi.on("reInit", onSelect)
+    }, [emblaApi, onSelect])
+
+    return (
+      <>
+        <div className="relative">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-6">
+              {screenshots.map((screenshot, index) => (
+                <div key={index} className="flex-[0_0_calc(33.333%-16px)] min-w-0 md:flex-[0_0_calc(33.333%-16px)]">
+                  <div
+                    className="group relative overflow-hidden rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-all cursor-pointer"
+                    onClick={() => setSelectedImage(index)}
+                  >
+                    <img
+                      src={screenshot.src || "/placeholder.svg"}
+                      alt={screenshot.title}
+                      className="w-full h-64 object-cover object-top transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <h3 className="text-white font-semibold text-lg">{screenshot.title}</h3>
+                      <p className="text-white/80 text-sm">{screenshot.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Botões de navegação */}
+          <button
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all z-10"
+            onClick={scrollPrev}
+            disabled={!canScrollPrev}
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <button
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all z-10"
+            onClick={scrollNext}
+            disabled={!canScrollNext}
+          >
+            <ChevronRight className="w-6 h-6 text-gray-800" />
+          </button>
+        </div>
+
+        {/* Lightbox Dialog */}
+        <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
+          <DialogContent className="max-w-6xl w-full p-0 overflow-hidden">
+            {selectedImage !== null && (
+              <div className="relative">
+                <button
+                  onClick={() => setSelectedImage(null)}
+                  className="absolute top-4 right-4 z-50 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                <img
+                  src={screenshots[selectedImage].src || "/placeholder.svg"}
+                  alt={screenshots[selectedImage].title}
+                  className="w-full h-auto"
+                />
+                <div className="bg-gray-900 text-white p-6">
+                  <h3 className="text-2xl font-bold mb-2">{screenshots[selectedImage].title}</h3>
+                  <p className="text-gray-300">{screenshots[selectedImage].description}</p>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+      </>
+    )
   }
 
   return (
@@ -199,38 +352,30 @@ export default function Component() {
           </div>
         </section>
 
-        {/* Problemas que resolve */}
-        <section className="w-full py-12 md:py-24 bg-gray-50">
+        {/* Galeria de Telas do Sistema */}
+        <section className="w-full py-12 md:py-24 bg-white">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
-                Problemas que a LynIA resolve
+                Conheça o sistema completo
               </h2>
               <p className="mx-auto max-w-[800px] text-gray-600 md:text-xl">
-                Identifique-se com os desafios do seu dia a dia e veja como a LynIA pode ajudar.
+                Uma plataforma completa de CRM com integração ao WhatsApp, automações inteligentes e gestão visual de
+                vendas.
               </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm">
-                <Target className="h-10 w-10 text-red-500 mb-3" />
-                <h3 className="font-semibold mb-2">Leads sem qualificação</h3>
-                <p className="text-sm text-gray-600">Tempo perdido com prospects que não têm fit</p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm">
-                <Database className="h-10 w-10 text-orange-500 mb-3" />
-                <h3 className="font-semibold mb-2">CRM desatualizado</h3>
-                <p className="text-sm text-gray-600">Informações importantes se perdem no processo</p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm">
-                <Clock className="h-10 w-10 text-yellow-500 mb-3" />
-                <h3 className="font-semibold mb-2">Follow-ups perdidos</h3>
-                <p className="text-sm text-gray-600">Oportunidades escapam por falta de acompanhamento</p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm">
-                <Users className="h-10 w-10 text-blue-500 mb-3" />
-                <h3 className="font-semibold mb-2">Equipe sobrecarregada</h3>
-                <p className="text-sm text-gray-600">Vendedores gastam tempo com tarefas repetitivas</p>
-              </div>
+
+            <ScreenshotGallery />
+
+            <div className="text-center mt-8">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+                onClick={() => window.open(whatsappLink, "_blank")}
+              >
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Solicite uma demonstração completa
+              </Button>
             </div>
           </div>
         </section>

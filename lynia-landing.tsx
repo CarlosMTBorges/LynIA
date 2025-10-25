@@ -49,6 +49,24 @@ export default function Component() {
   }
 
   const ScreenshotGallery = () => {
+    const [isClient, setIsClient] = useState(false)
+    const [windowWidth, setWindowWidth] = useState(0)
+
+    useEffect(() => {
+      setIsClient(true)
+      setWindowWidth(window.innerWidth)
+
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth)
+      }
+
+      window.addEventListener("resize", handleResize)
+      return () => window.removeEventListener("resize", handleResize)
+    }, [])
+
+    const isMobileView = windowWidth < 768
+    const slidesPerView = isMobileView ? 1 : 3
+
     const [emblaRef, emblaApi] = useEmblaCarousel({
       loop: true,
       align: "start",
@@ -127,13 +145,25 @@ export default function Component() {
       emblaApi.on("reInit", onSelect)
     }, [emblaApi, onSelect])
 
+    if (!isClient) {
+      return null
+    }
+
     return (
       <>
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-6">
+            <div className="flex gap-4 md:gap-6">
               {screenshots.map((screenshot, index) => (
-                <div key={index} className="flex-[0_0_calc(33.333%-16px)] min-w-0 md:flex-[0_0_calc(33.333%-16px)]">
+                <div
+                  key={index}
+                  className={`flex-[0_0_calc(100%-32px)] min-w-0 ${
+                    isMobileView ? "" : "md:flex-[0_0_calc(33.333%-16px)]"
+                  }`}
+                  style={{
+                    flexBasis: isMobileView ? "calc(100% - 32px)" : "calc(33.333% - 16px)",
+                  }}
+                >
                   <div
                     className="group relative overflow-hidden rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-all cursor-pointer"
                     onClick={() => setSelectedImage(index)}
@@ -155,18 +185,18 @@ export default function Component() {
 
           {/* Botões de navegação */}
           <button
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all z-10"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 md:p-3 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all z-10"
             onClick={scrollPrev}
             disabled={!canScrollPrev}
           >
-            <ChevronLeft className="w-6 h-6 text-gray-800" />
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-gray-800" />
           </button>
           <button
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all z-10"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 md:p-3 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all z-10"
             onClick={scrollNext}
             disabled={!canScrollNext}
           >
-            <ChevronRight className="w-6 h-6 text-gray-800" />
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-gray-800" />
           </button>
         </div>
 
@@ -374,14 +404,14 @@ export default function Component() {
                 onClick={() => window.open(whatsappLink, "_blank")}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
-                Solicite uma demonstração completa
+                Solicite uma demonstração!
               </Button>
             </div>
           </div>
         </section>
 
         {/* Benefícios principais */}
-        <section id="beneficios" className="w-full py-12 md:py-24 bg-white">
+        <section id="beneficios" className="w-full py-12 md:py-24 bg-gray-50">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
@@ -578,7 +608,7 @@ export default function Component() {
         <div className="flex items-center">
           <img src="/logo-lynia.png" alt="LynIA" className="h-8" />
         </div>
-        <p className="text-xs text-gray-500 sm:ml-4">© 2024 LynIA. Todos os direitos reservados.</p>
+        <p className="text-xs text-gray-500 sm:ml-4">© 2025 LynIA. Todos os direitos reservados.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link href="#" className="text-xs hover:underline underline-offset-4 text-gray-500">
             Termos de Uso
